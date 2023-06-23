@@ -71,11 +71,7 @@ def main(tomo_folder, tomomask_folder, cc_folder, job_folder, candidates_folder,
 	counter = 0
 	tomolist = glob.glob("%s/*.mrc" %(tomo_folder))
 	tomonum = len(tomolist)
-	#if os.path.isfile(z_list):
-	#	for tomofile in tomolist:
-	#		if not (zdf['tomo'].eq(os.path.basename(tomofile))).any():
-	#			print(f"Z values for {os.path.basename(tomofile)} not found, make sure you have the file formatted correctly... exisitng!")
-	#			sys.exit(0)
+
 	job_commands=[]
 	for tomofile in tomolist:
 		tomoname = Path(tomofile).stem
@@ -85,10 +81,7 @@ def main(tomo_folder, tomomask_folder, cc_folder, job_folder, candidates_folder,
 			print("Making %s to save score and angle maps..." %(tomo_cc_folder))
 			os.mkdir(tomo_cc_folder)
 
-		#if os.path.isfile(z_list):
-		#	z_min = zdf.loc[zdf['tomo'] == os.path.basename(tomofile)]['z_min'].values[0]
-		#	z_max = zdf.loc[zdf['tomo'] == os.path.basename(tomofile)]['z_max'].values[0]
-			#print("Z range read from file to be {z_min}-{z_max}, replacing the default values!")
+
 		job_command=f"localizationJob.py -v {tomofile} -r {ref} -m {mask} --wedge1 {wedge1} --wedge2 {wedge2} -a {anglist}  -d {cc_folder}/{tomoname} --splitX 8 --splitY 12  --splitZ 4 -j {job_folder}/{tomoname}_{refname}.xml --zstart {z_min} --zend {z_min+z_max}"
 		print(f"Making Job File: {job_folder}/{tomoname}_{refname}.xml")
 		job_commands.append(job_command)
