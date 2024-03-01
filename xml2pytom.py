@@ -1,11 +1,7 @@
 import xml.etree.ElementTree as ET
 import numpy as np
 import glob
-'''
-This code uses the xml files generated in warp to create the corresponding files for pyTOM template-matching.
-files needed are .defocus (made in etomo), .tlt (tilt angles), and .txt (for dose)
-there is also an sbatch file created with the commands to run the template-matching
-'''
+
 tomo_dir = 'tomo/'
 tomo_suffix = '.mrc_6.65Apx.mrc'
 ref_name = "70S_ref.mrc"
@@ -15,13 +11,12 @@ ymax = 1440
 zmax = 450
 angular_sampling = "7.00"
 pixel_size = 6.65
-output_dir = ref_name + angular_sampling + 'deg_output'
+output_dir = ref_name.split('.')[0] + '_' + angular_sampling + 'deg_output'
 
 xml_list = glob.glob('*.xml')
-for file_path in xml_list:
-    with open("pytom.sbatch", 'w') as sbatch_file:
+with open("pytom.sbatch", 'w') as sbatch_file:
+    for file_path in xml_list:
         #input file
-        file_path = 'JTL016A_3_L02_ts_003.mrc.xml'
         tree = ET.parse(file_path)
         root = tree.getroot()
         #getting relevant data
@@ -71,7 +66,7 @@ for file_path in xml_list:
 --angular-search {angular_sampling} --search-x 0 {xmax} --search-y 0 {ymax} --search-z 0 {zmax}  --voxel-size-angstrom  {pixel_size} \
 --low-pass 25 --high-pass 1000 -d {output_dir } --per-tilt-weighting -a {tomo_dir}/{tlt_file_name}  \
 --dose-accumulation {tomo_dir}/{dose_file_name} --defocus-file {tomo_dir}/{defocus_file_name} \
---voltage 300 --amplitude-contrast 0.1 --spherical-abberation 2.7 -g 0 1 2 3 -s 2 2 1")
+--voltage 300 --amplitude-contrast 0.1 --spherical-abberation 2.7 -g 0 1 2 3 -s 2 2 1 \n")
 
     # Replace 'file.xml' with the path to your XML file
     #defocus_value, dose_value, tlt_value = parse_xml_file('JTL016A_3_L02_ts_003.mrc.xml')
